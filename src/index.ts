@@ -1,32 +1,42 @@
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server-express";
-import * as Express from "express";
-import { buildSchema, Query, Resolver } from "type-graphql";
+import Express from "express";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import { RegisterResolver } from "./modules/user/Register";
+import config from "./ormconfig";
 
-@Resolver()
-class HelloResolver {
-  // private recipesCollection: Recipe[] = [];
+// @Resolver()
+// class HelloResolver {
+//   // private recipesCollection: Recipe[] = [];
 
-  @Query(() => String, { name: "helloWorld", nullable: true })
-  async helloWorld() {
-    // fake async in this example
-    return "hello world";
-  }
-}
+//   @Query(() => String, { name: "helloWorld", nullable: true })
+//   async helloWorld() {
+//     // fake async in this example
+//     return "hello world";
+//   }
+// }
 
 const main = async () => {
-  const schema = await buildSchema({
-    resolvers: [HelloResolver],
-  });
-  const apolloServer = new ApolloServer({ schema });
+  try {
+    await createConnection({ ...config });
 
-  const app = Express();
+    const schema = await buildSchema({
+      resolvers: [RegisterResolver],
+      validate: false,
+    });
+    const apolloServer = new ApolloServer({ schema });
 
-  apolloServer.applyMiddleware({ app });
+    const app = Express();
 
-  app.listen(4000, () => {
-    console.log("server started at localhost:4000");
-  });
+    apolloServer.applyMiddleware({ app });
+
+    app.listen(4000, () => {
+      console.log("server started at localhost:4000");
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 main();
