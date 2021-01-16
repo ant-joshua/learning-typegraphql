@@ -1,7 +1,7 @@
 require("dotenv").config();
 import { ConnectionOptions } from "typeorm";
 
-const rootDir = process.env.NODE_ENV === "development" ? "src" : "build/src";
+const rootDir = process.env.NODE_ENV === "development" ? "" : "../build/src";
 export const config: ConnectionOptions = {
   host: process.env.DB_HOST,
   type: "postgres",
@@ -9,9 +9,9 @@ export const config: ConnectionOptions = {
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  entities: [rootDir + "/entity/**/*.{js,ts}"],
-  migrations: [rootDir + "/migrations/*.{js,ts}"],
-  subscribers: [rootDir + "/subscribers/**/*.{js,ts}"],
+  entities: [__dirname + "/entity/**/*.ts"],
+  migrations: [__dirname + "/migrations/*.ts"],
+  subscribers: [__dirname + "/subscribers/**/*.ts"],
   cli: {
     entitiesDir: `${rootDir}/entity`,
     migrationsDir: `${rootDir}/migration`,

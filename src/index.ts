@@ -4,7 +4,7 @@ import Express from "express";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { RegisterResolver } from "./modules/user/Register";
-import config from "./ormconfig";
+import { config } from "./ormconfig";
 
 // @Resolver()
 // class HelloResolver {
