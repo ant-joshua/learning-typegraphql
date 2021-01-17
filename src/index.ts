@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server-express";
-import Express from "express";
+import express from "express";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { RegisterResolver } from "./modules/user/Register";
@@ -9,32 +9,37 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { redis } from "./redis";
 import cors from "cors";
+import { LoginResolver } from "./modules/user/Login";
+import { MeResolver } from "./modules/user/Me";
 
-// @Resolver()
-// class HelloResolver {
-//   // private recipesCollection: Recipe[] = [];
-
-//   @Query(() => String, { name: "helloWorld", nullable: true })
-//   async helloWorld() {
-//     // fake async in this example
-//     return "hello world";
-//   }
-// }
+declare module "express-session" {
+  export interface SessionData {
+    // user: { [key: string]: any };
+    userId: number;
+  }
+}
 
 const main = async () => {
   try {
     await createConnection({ ...config });
 
     const schema = await buildSchema({
-      resolvers: [RegisterResolver],
+      resolvers: [RegisterResolver, LoginResolver, MeResolver],
       validate: true,
+      authChecker: ({ context: { req } }) => {
+        // if (req.session.userId) {
+        //   return true;
+        // }
+        // return false;
+        return !!req.session.userId;
+      },
     });
     const apolloServer = new ApolloServer({
       schema,
       context: ({ req }: any) => ({ req }),
     });
 
-    const app = Express();
+    const app = express();
 
     app.use(
       cors({

@@ -1,7 +1,7 @@
 import { IsEmail, IsString, Length } from "class-validator";
 import { User } from "src/entity/User";
 import { Field, InputType } from "type-graphql";
-import { IsEmailAlreadyExist } from "./register/IsEmailAlreadyExists";
+import { IsEmailAlreadyExist } from "./IsEmailAlreadyExists";
 
 @InputType()
 export class RegisterInput implements Partial<User> {

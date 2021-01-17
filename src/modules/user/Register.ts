@@ -1,12 +1,15 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import bcrypt from "bcryptjs";
 import { User } from "../../entity/User";
-import { RegisterInput } from "./RegisterInput";
+import { RegisterInput } from "./register/RegisterInput";
+import { isAuth } from "../middleware/isAuth";
+import { logger } from "../middleware/logger";
 
 @Resolver(User)
 export class RegisterResolver {
   // private recipesCollection: Recipe[] = [];
 
+  @UseMiddleware(isAuth, logger)
   @Query(() => String, { name: "helloWorld", nullable: true })
   async helloWorld() {
     return "hello world";
